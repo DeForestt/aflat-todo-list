@@ -1,9 +1,7 @@
-.root "head"
-.needs "DateFormat"
-
 .needs <io>
+.needs <String>
 
-int daysInMonth(int month, int year){
+export int daysInMonth(int month, int year){
 
     if month == 2 {
         if year % 4 == 0 {
@@ -23,7 +21,7 @@ int daysInMonth(int month, int year){
     return 31;
 };
 
-int daysInYear(int year){
+private int daysInYear(int year){
     if year % 4 == 0 {
         if year % 100 == 0 {
             if year % 400 == 0 {
@@ -36,7 +34,7 @@ int daysInYear(int year){
     return 365;
 };
 
-int daysSinceJan1(int year, int month, int day) {
+export int daysSinceJan1(int year, int month, int day) {
   
   int days = 0;
 
@@ -47,7 +45,7 @@ int daysSinceJan1(int year, int month, int day) {
   return days;
 };
 
-int daysSinceYear(int currYear, int fromYear){
+private int daysSinceYear(int currYear, int fromYear){
     int days = 0;
     for int i = fromYear; i < currYear; i = i + 1
         days = days + daysInYear(i);
@@ -55,7 +53,7 @@ int daysSinceYear(int currYear, int fromYear){
 };
 
 // a function that converts the date string (mmddyyyy) to days since epoch
-int mmddyyyyToEpoch(String date){
+export int mmddyyyyToEpoch(String date){
     String month = date.subString(0, 2);
     String day = date.subString(2, 4);
     String year = date.subString(4, 8);

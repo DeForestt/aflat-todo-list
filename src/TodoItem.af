@@ -1,8 +1,23 @@
 .needs <std>
-.root "head"
-.needs "TodoItem.gs"
-.needs "DateFormat"
+.needs <String>
 
+
+
+class TodoItem {
+    private bool completed;
+    private int priority;
+    String date;
+    String text;
+    String name;
+    private bool pinned;
+    
+    TodoItem init(String name, String text, String date);
+    String serialize();
+    bool isCompleted();
+    bool isPinned();
+    bool setPinned(bool pinned);
+    int setCompleted(bool completed);
+};
 
 TodoItem init@TodoItem(String name, String text, String date){
     my.name = name;
@@ -57,7 +72,7 @@ bool isPinned@TodoItem(){
     return my.pinned;
 };
 
-TodoItem deserialize(String input){
+export TodoItem deserialize(String input){
     LinkedList data = input.split(',');
     String name = data.get(0);
     String text = data.get(1);

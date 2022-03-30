@@ -4,9 +4,10 @@
 .needs <String>
 .needs <std>
 .needs <concurrancy>
-.root "head"
-.needs "TodoItem"
-.needs "DateFormat"
+
+import TodoItem from "./src/TodoItem.af";
+import {deserialize} from "./src/TodoItem.af" under td;
+import {mmddyyyyToEpoch} from "./src/DateFormat.af" under dt;
 
 LinkedList readSaveData(){
 	File file = openFile("todo.csv");
@@ -22,10 +23,10 @@ LinkedList readSaveData(){
 	LinkedList Stringlist = list.map([adr ele]=>return new String(ele));
 
 
-	String first = list.get(0);
+	String first = Stringlist.get(0);
 	if first.equal("") return new LinkedList();
 
-	LinkedList Dlist = list.map([String str]=>return deserialize(str));
+	LinkedList Dlist = list.map([String str]=>return td.deserialize(str));
 	return Dlist;
 };
 
@@ -59,8 +60,8 @@ int insertItem(LinkedList data, TodoItem item){
 
 	for int i = 0; i < data.size(); i++{
 		TodoItem it = data.get(i);
-		int itDate = mmddyyyyToEpoch(it.date);
-		int itemDate = mmddyyyyToEpoch(item.date);
+		int itDate = dt.mmddyyyyToEpoch(it.date);
+		int itemDate = dt.mmddyyyyToEpoch(item.date);
 		if itDate > itemDate {
 			data.insert(item, i);
 			return 0;
@@ -183,8 +184,8 @@ int main(){
 			TodoItem item = new TodoItem(name, description, dueDate);
 			insertItem(data, item);
 		};
-
 		choice.delete();
 	};
+
 	return 0;
 };
