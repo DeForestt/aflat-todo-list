@@ -4,6 +4,7 @@
 .needs <String>
 .needs <std>
 .needs <concurrancy>
+.needs <DateTime>
 
 import TodoItem from "./src/TodoItem.af";
 import {deserialize} from "./src/TodoItem.af" under td;
@@ -67,6 +68,7 @@ int insertItem(LinkedList data, TodoItem item){
 			return 0;
 		};
 	};
+
 	data.append(item);
 	return 0;
 };
@@ -160,7 +162,8 @@ int main(){
 				pause();
 			};
 			index.delete();
-		} else if choice.at(0) == '4'{
+		} else if choice.at(0) == '4' |
+			choice.at(0) == 'q' {
 			saveData(data);
 			return 0;
 		} else {
