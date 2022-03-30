@@ -19,14 +19,14 @@ LinkedList readSaveData(){
 
 	LinkedList list = file.toList('\n');
 	file.close();
-	list = list.map([adr ele]=>return new String(ele));
+	LinkedList Stringlist = list.map([adr ele]=>return new String(ele));
 
 
 	String first = list.get(0);
 	if first.equal("") return new LinkedList();
 
-	list = list.map([String str]=>return deserialize(str));
-	return list;
+	LinkedList Dlist = list.map([String str]=>return deserialize(str));
+	return Dlist;
 };
 
 int pause(){
@@ -37,19 +37,19 @@ int pause(){
 int saveData(LinkedList data){
 
 	File file = createFile("todo.csv");
-	data = data.map([TodoItem item]=>{
+	LinkedList Stringdata = data.map([TodoItem item]=>{
 		return item.serialize()
 	});
 	
 	int len = data.size();
 
-	data = data.map([String str, int index, adr l]=>{
+	LinkedList Limdata = Stringdata.map([String str, int index, adr l]=>{
 		int final = l as int;
 		if index < final - 1 return str + "\n";
 		return str;
 	}, ?len);
 	
-	data.forEach([String str, int index, File f]=>{
+	Limdata.forEach([String str, int index, File f]=>{
 		f.write(str.getPrimitive());
 	}, file);
 	file.close();
