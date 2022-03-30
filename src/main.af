@@ -1,0 +1,190 @@
+.needs <io>
+.needs <Collections>
+.needs <files>
+.needs <String>
+.needs <std>
+.needs <concurrancy>
+.root "head"
+.needs "TodoItem"
+.needs "DateFormat"
+
+LinkedList readSaveData(){
+	File file = openFile("todo.csv");
+
+	if (file == NULL) {
+		file = createFile("todo.csv");
+		file.close();
+		return new LinkedList();
+	};
+
+	LinkedList list = file.toList('\n');
+	file.close();
+	list = list.map([adr ele]=>return new String(ele));
+
+
+	String first = list.get(0);
+	if first.equal("") return new LinkedList();
+
+	list = list.map([String str]=>return deserialize(str));
+	return list;
+};
+
+int pause(){
+	String s = getString();
+	s.delete();
+};
+
+int saveData(LinkedList data){
+
+	File file = createFile("todo.csv");
+	data = data.map([TodoItem item]=>{
+		return item.serialize()
+	});
+	
+	int len = data.size();
+
+	data = data.map([String str, int index, adr l]=>{
+		int final = l as int;
+		if index < final - 1 return str + "\n";
+		return str;
+	}, ?len);
+	
+	data.forEach([String str, int index, File f]=>{
+		f.write(str.getPrimitive());
+	}, file);
+	file.close();
+};
+
+int insertItem(LinkedList data, TodoItem item){
+
+	for int i = 0; i < data.size(); i++{
+		TodoItem it = data.get(i);
+		int itDate = mmddyyyyToEpoch(it.date);
+		int itemDate = mmddyyyyToEpoch(item.date);
+		if itDate > itemDate {
+			data.insert(item, i);
+			return 0;
+		};
+	};
+	data.append(item);
+	return 0;
+};
+
+int main(){
+	LinkedList data = readSaveData();
+
+	while(true){
+		clear();
+		print("***********************\n");
+		print("*Welcome to Aflat Todo*\n");
+		print("***********************\n\n");
+		
+		LinkedList pending = data.where([TodoItem item]=>{
+			bool comp = item.isCompleted();
+			return !comp;
+		});
+
+		if pending.size() == 0 print("Nothing left to do!\nKeep up the good work!\n\n")
+		else {
+			print("You have ");
+			printInt(pending.size());
+			if pending.size() == 1 print(" thing" )
+			else print(" things" );
+			print(" to do!\n\n");
+		};
+
+		free(pending);
+
+		data.forEach([TodoItem item, int index]=>{
+			printInt(index + 1); print(". Name: ");
+			printString(item.name);
+			String name = item.name;
+			if name.len() < 20
+				for int i = 0; i < 20 - name.len(); i++
+					print(" ");
+			print("\tCompleted: ");
+			if item.isCompleted() print("✓") else print("✗");
+			print("\tDate: ");
+			printString(item.date);
+			print("\tDescription: ");
+			printString(item.text);
+			print("\n");
+		});
+		print("\n");
+		print("Actions:\n");
+		print("1. Add a new item | 2. Remove an item | 3. Mark an item as done | 4. Exit\n");
+		print("Enter your choice: "); 
+
+		String choice = getString();
+
+		if choice.at(0) == '1' {
+			print("Enter item name: ");
+			String name = getString();
+			while name.len() > 20 {
+				print("Name too long! Enter a name up to 20 charactars long: ");
+				String nst = getString();
+				name = nst;
+			};
+			print("Enter item description: ");
+			String description = getString();
+			print("Enter due date (mmddyyyy): ");
+			String dueDate = getString();
+			while dueDate.isNumeric() == false | dueDate.len() != 8 {
+				print("Invalid date! Enter a date in the format mmddyyyy: ");
+				String nst = getString();
+				dueDate = nst;
+			};
+			TodoItem item = new TodoItem(name, description, dueDate);
+			insertItem(data, item);
+		} else if choice.at(0) == '2'{
+			print("Enter item number to remove: ");
+			String index = getString();
+			int i = index.toInt();
+			if i > 0 & i <= data.size() {
+				data.delete(i - 1);
+			} else {
+				print("Invalid item number!\n");
+				pause();
+			};
+			free(index);
+		} else if choice.at(0) == '3'{
+			print("Enter item number to mark as done: ");
+			String index = getString();
+			int i = index.toInt();
+			if i > 0 & i <= data.size() {
+				TodoItem item = data.get(i - 1);
+				item.setCompleted(true);
+			} else {
+				print("Invalid item number!\n");
+				pause();
+			};
+			index.delete();
+		} else if choice.at(0) == '4'{
+			saveData(data);
+			return 0;
+		} else {
+			print("Creating new item... "); printString(choice); print("\n");
+			adr namePrim = choice.getPrimitive();
+			String name = new String(namePrim);
+			while name.len() > 20 {
+				print("Name too long! Enter a name up to 20 charactars long: ");
+				String nst = getString();
+				name = nst;
+			};
+			print("Enter item description: ");
+			String description = getString();
+			print("Enter due date (mmddyyyy): ");
+			String dueDate = getString();
+			while dueDate.isNumeric() == false | dueDate.len() != 8 {
+				print("Invalid date! Enter a date in the format mmddyyyy: ");
+				String nst = getString();
+				dueDate = nst;
+			};
+			TodoItem item = new TodoItem(name, description, dueDate);
+			insertItem(data, item);
+		};
+
+		choice.delete();
+	};
+	return 0;
+};

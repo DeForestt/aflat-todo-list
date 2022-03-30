@@ -1,0 +1,74 @@
+.needs <std>
+.root "head"
+.needs "TodoItem.gs"
+.needs "DateFormat"
+
+
+TodoItem init@TodoItem(String name, String text, String date){
+    my.name = name;
+    my.text = text;
+    my.completed = false;
+    my.pinned = false;
+    my.date = date;
+};
+
+String serialize@TodoItem(){
+    String name = my.name;
+    name = name + ",";
+    String text = my.text;
+    text = text + ",";
+    String date = my.date;
+    String comp = new String("");
+    String pin = new String("");
+
+    if (my.completed)
+        comp = comp + "true,"
+    else
+        comp = comp + "false,";
+
+    if (my.pinned)
+        pin = pin + "true,"
+    else
+        pin = pin + "false,";
+    
+    
+    String output = name & text;
+    output = output & comp;
+    output = output & pin;
+    output = output & date;
+    return output;
+};
+
+int setCompleted@TodoItem(bool completed){
+    my.completed = completed;
+    return 0;
+};
+
+bool isCompleted@TodoItem(){
+    return my.completed;
+};
+
+int setPinned@TodoItem(bool pinned){
+    my.pinned = pinned;
+    return 0;
+};
+
+bool isPinned@TodoItem(){
+    return my.pinned;
+};
+
+TodoItem deserialize(String input){
+    LinkedList data = input.split(',');
+    String name = data.get(0);
+    String text = data.get(1);
+    String comp = data.get(2);
+    String pin = data.get(3);
+    String date = data.get(4);
+    
+    TodoItem item = new TodoItem(name, text, date);
+
+    item.setCompleted(comp.equal("true"));
+    item.setPinned(pin.equal("true"));
+
+    return item;
+};

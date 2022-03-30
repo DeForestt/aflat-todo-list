@@ -1,0 +1,71 @@
+.root "head"
+.needs "DateFormat"
+
+.needs <io>
+
+int daysInMonth(int month, int year){
+
+    if month == 2 {
+        if year % 4 == 0 {
+            if year % 100 == 0 {
+                if year % 400 == 0 {
+                    return 29;
+                };
+                return 28;
+            };
+            return 29;
+        };
+        return 28;
+     };
+     
+    if month == 4 | month == 6 | month == 9 | month == 11
+        return 30;
+    return 31;
+};
+
+int daysInYear(int year){
+    if year % 4 == 0 {
+        if year % 100 == 0 {
+            if year % 400 == 0 {
+                return 366;
+            };
+            return 365;
+        };
+        return 366;
+    };
+    return 365;
+};
+
+int daysSinceJan1(int year, int month, int day) {
+  
+  int days = 0;
+
+  for int i = 1; i < month; i = i + 1
+    days = days + daysInMonth(i, year);
+  days = days + day;
+
+  return days;
+};
+
+int daysSinceYear(int currYear, int fromYear){
+    int days = 0;
+    for int i = fromYear; i < currYear; i = i + 1
+        days = days + daysInYear(i);
+    return days;
+};
+
+// a function that converts the date string (mmddyyyy) to days since epoch
+int mmddyyyyToEpoch(String date){
+    String month = date.subString(0, 2);
+    String day = date.subString(2, 4);
+    String year = date.subString(4, 8);
+
+    int monthInt = month.toInt();
+    int dayInt = day.toInt();
+    int yearInt = year.toInt();
+
+    int thisYear = daysSinceJan1(yearInt, monthInt, dayInt);
+    int epoch = daysSinceYear(yearInt, 1970);
+    int days = epoch + thisYear;
+    return days;
+};
