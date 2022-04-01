@@ -1,7 +1,8 @@
 .needs <std>
-.needs <String>
 
-
+import String from "String.af";
+import ICollection from "Collections";
+import LinkedList from "Collections";
 
 class TodoItem {
     private bool completed;

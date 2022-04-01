@@ -1,5 +1,4 @@
-.needs <io>
-.needs <String>
+import String from "String";
 
 export int daysInMonth(int month, int year){
 
