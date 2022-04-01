@@ -32,7 +32,7 @@ LinkedList readSaveData(){
 	String first = Stringlist.get(0);
 	if first.equal("") return new LinkedList();
 
-	LinkedList Dlist = list.map([String strl]=>return td.deserialize(strl));
+	LinkedList Dlist = Stringlist.map([String strl]=>return td.deserialize(strl));
 	return Dlist;
 };
 
